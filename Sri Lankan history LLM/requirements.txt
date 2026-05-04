@@ -1,0 +1,8 @@
+streamlit>=1.39
+chromadb>=0.5
+sentence-transformers>=3.0
+google-generativeai>=0.8
+pypdf>=5.0
+beautifulsoup4>=4.12
+python-dotenv>=1.0
+pillow>=11.0
