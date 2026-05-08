@@ -26,17 +26,25 @@ from chromadb.utils import embedding_functions
 from dotenv import load_dotenv
 
 # ---- config ----
-DB_DIR = "vectorstore"
+# Resolve paths relative to this file so they work whether the app is run from
+# the script's folder (local) or the repo root (Streamlit Cloud).
+HERE = Path(__file__).parent
+DB_DIR = str(HERE / "vectorstore")
 COLLECTION_NAME = "sri_lankan_history"
 EMBED_MODEL = "all-MiniLM-L6-v2"
 GEMINI_MODEL = "gemini-2.5-flash"   # free tier, fast
 TOP_K = 5
-SYSTEM_PROMPT_PATH = Path("system_prompt.txt")
+SYSTEM_PROMPT_PATH = HERE / "system_prompt.txt"
 
 load_dotenv()
 
 # Streamlit Cloud puts secrets in st.secrets; locally we use .env
-API_KEY = os.getenv("GEMINI_API_KEY") or st.secrets.get("GEMINI_API_KEY", None)
+API_KEY = os.getenv("GEMINI_API_KEY")
+if not API_KEY:
+    try:
+        API_KEY = st.secrets.get("GEMINI_API_KEY", None)
+    except Exception:
+        API_KEY = None
 if not API_KEY:
     st.error("Missing GEMINI_API_KEY. Add it to .env locally or to Secrets on Streamlit Cloud.")
     st.stop()
